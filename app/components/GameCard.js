@@ -9,7 +9,7 @@ const GameCard = ({ game }) => {
       className="block bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
     >
       <div className="relative">
-        <div className="relative h-[200px] w-full">
+        <div className="relative h-[150px] w-full">
           <Image
             src={game.background_image || '/placeholder.jpg'}
             alt={game.name}

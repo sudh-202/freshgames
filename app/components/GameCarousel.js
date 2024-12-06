@@ -45,7 +45,7 @@ const GameCarousel = ({ title, games }) => {
         }}
       >
         {games.map((game) => (
-          <div key={game.id} className="flex-none w-[300px]">
+          <div key={game.id} className="flex-none w-[300px] basis-1/5">
             <GameCard game={game} />
           </div>
         ))}

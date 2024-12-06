@@ -18,7 +18,7 @@ export const getUpcomingGames = async () => {
       params: {
         dates: `${currentDate},${nextMonth}`,
         ordering: '-added',
-        page_size: 12,
+        page_size: 20,
       },
     });
     return data.results;
@@ -34,7 +34,7 @@ export const getCrackedGames = async () => {
       params: {
         metacritic: '80,100',
         ordering: '-released',
-        page_size: 12,
+        page_size: 20,
       },
     });
     return data.results;
@@ -50,7 +50,7 @@ export const getUncrackedGames = async () => {
       params: {
         dates: '2023-01-01,2024-12-31',
         ordering: '-added',
-        page_size: 12,
+        page_size: 20,
       },
     });
     return data.results;

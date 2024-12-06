@@ -62,8 +62,29 @@ export const getUncrackedGames = async () => {
 
 export const getGameDetails = async (id) => {
   try {
-    const { data } = await api.get(`/games/${id}`);
-    return data;
+    const [gameData, movieData, storeData] = await Promise.all([
+      api.get(`/games/${id}`),
+      api.get(`/games/${id}/movies`),
+      api.get(`/games/${id}/stores`)
+    ]);
+
+    const stores = await Promise.all(
+      storeData.data.results.map(async (store) => {
+        const storeDetails = await api.get(`/stores/${store.store_id}`);
+        return {
+          ...store,
+          storeName: storeDetails.data.name,
+          storeIcon: storeDetails.data.image_background,
+          domain: storeDetails.data.domain
+        };
+      })
+    );
+
+    return {
+      ...gameData.data,
+      trailer: movieData.data.results[0] || null,
+      stores: stores
+    };
   } catch (error) {
     console.error('Error fetching game details:', error);
     return null;

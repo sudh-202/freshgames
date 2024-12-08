@@ -15,8 +15,8 @@ const GameCarousel = ({ title, games }) => {
 
   if (!games || games.length === 0) {
     return (
-      <div className="bg-gray-800/50 rounded-lg p-8 text-center">
-        <p className="text-gray-400">No games available in this category</p>
+      <div className="flex items-center justify-center h-48 bg-gray-800 rounded-lg">
+        <p className="text-gray-400">No games available</p>
       </div>
     );
   }

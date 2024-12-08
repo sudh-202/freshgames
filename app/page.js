@@ -1,6 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { getUpcomingGames, getCrackedGames, getUncrackedGames } from './utils/api';
+import { 
+  getUpcomingGames, 
+  getCrackedGames, 
+  getUncrackedGames,
+  getPopularGames,
+  getAAAGames,
+  getIndieGames
+} from './utils/api';
 import GameCarousel from './components/GameCarousel';
 import SearchBar from './components/SearchBar';
 import GameCard from './components/GameCard'; 
@@ -9,23 +16,38 @@ export default function Home() {
   const [upcomingGames, setUpcomingGames] = useState([]);
   const [crackedGames, setCrackedGames] = useState([]);
   const [uncrackedGames, setUncrackedGames] = useState([]);
+  const [popularGames, setPopularGames] = useState([]);
+  const [aaaGames, setAAAGames] = useState([]);
+  const [indieGames, setIndieGames] = useState([]);
   const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchGames = async () => {
+      setLoading(true);
       try {
-        const [upcoming, cracked, uncracked] = await Promise.all([
+        console.log('Fetching games...');
+        const [upcoming, cracked, uncracked, popular, aaa, indie] = await Promise.all([
           getUpcomingGames(),
           getCrackedGames(),
           getUncrackedGames(),
+          getPopularGames(),
+          getAAAGames(),
+          getIndieGames()
         ]);
 
-        setUpcomingGames(upcoming);
-        setCrackedGames(cracked);
-        setUncrackedGames(uncracked);
+        console.log('Uncracked Games Response:', uncracked);
+        
+        setUpcomingGames(upcoming || []);
+        setCrackedGames(cracked || []);
+        setUncrackedGames(uncracked || []);
+        setPopularGames(popular || []);
+        setAAAGames(aaa || []);
+        setIndieGames(indie || []);
       } catch (error) {
         console.error('Error fetching games:', error);
+        setError(error);
       } finally {
         setLoading(false);
       }
@@ -46,6 +68,14 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-white text-2xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-white text-2xl">Error: {error.message}</div>
       </div>
     );
   }
@@ -78,13 +108,47 @@ export default function Home() {
           <div className="space-y-12">
             <section>
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <span className="mr-3">⭐</span>
+                Popular Games
+                <span className="ml-3 px-3 py-1 bg-yellow-600 rounded-full text-sm">
+                  {popularGames.length}
+                </span>
+              </h2>
+              {loading ? (
+                <div className="text-white text-lg">Loading...</div>
+              ) : (
+                <GameCarousel games={popularGames} />
+              )}
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
                 <span className="mr-3">🎮</span>
                 Upcoming Games
                 <span className="ml-3 px-3 py-1 bg-blue-600 rounded-full text-sm">
                   {upcomingGames.length}
                 </span>
               </h2>
-              <GameCarousel games={upcomingGames} />
+              {loading ? (
+                <div className="text-white text-lg">Loading...</div>
+              ) : (
+                <GameCarousel games={upcomingGames} />
+              )}
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <span className="mr-3">👑</span>
+                AAA Games
+                <span className="ml-3 px-3 py-1 bg-purple-600 rounded-full text-sm">
+                  {aaaGames.length}
+                </span>
+              </h2>
+              {loading ? (
+                <div className="text-white text-lg">Loading...</div>
+              ) : (
+                <GameCarousel games={aaaGames} />
+              )}
             </section>
 
             <section>
@@ -95,7 +159,11 @@ export default function Home() {
                   {crackedGames.length}
                 </span>
               </h2>
-              <GameCarousel games={crackedGames} />
+              {loading ? (
+                <div className="text-white text-lg">Loading...</div>
+              ) : (
+                <GameCarousel games={crackedGames} />
+              )}
             </section>
 
             <section>
@@ -106,7 +174,11 @@ export default function Home() {
                   {uncrackedGames.length}
                 </span>
               </h2>
-              <GameCarousel games={uncrackedGames} />
+              {loading ? (
+                <div className="text-white text-lg">Loading...</div>
+              ) : (
+                <GameCarousel games={uncrackedGames} />
+              )}
             </section>
           </div>
         )}

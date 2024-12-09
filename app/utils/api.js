@@ -8,7 +8,7 @@ if (!NEXT_PUBLIC_RAWG_API_KEY) {
 }
 
 // Cache configuration
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 1 * 60 * 1000; // 1 minutes
 const cache = new Map();
 
 // Create axios instance with default config
@@ -17,7 +17,7 @@ const api = axios.create({
   params: {
     key: NEXT_PUBLIC_RAWG_API_KEY,
   },
-  timeout: 20000, // Increased timeout to 20 seconds
+  timeout: 10000, // Increased timeout to 10 seconds
 });
 
 // Add retry logic to axios instance

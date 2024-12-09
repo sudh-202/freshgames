@@ -1,11 +1,13 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { getAllGames } from './utils/api';
-import GameCarousel from './components/GameCarousel';
-import SearchBar from './components/SearchBar';
-import GameCard from './components/GameCard';
-import Sidebar from './components/Sidebar';
-import LoadingTimer from './components/LoadingTimer';
+"use client";
+import { useState, useEffect } from "react";
+import { getAllGames } from "./utils/api";
+import GameCarousel from "./components/GameCarousel";
+import SearchBar from "./components/SearchBar";
+import GameCard from "./components/GameCard";
+import Sidebar from "./components/Sidebar";
+import LoadingTimer from "./components/LoadingTimer";
+import Link from "next/link";
+import Image from "next/image";
 
 const GameSection = ({ title, icon, games, bgColor, loading }) => (
   <section className="relative">
@@ -51,28 +53,28 @@ export default function Home() {
   useEffect(() => {
     let isMounted = true;
     const startTime = Date.now();
-    
+
     const fetchGames = async () => {
       setLoading(true);
-      
+
       try {
         const allGames = await getAllGames(selectedGenres);
-        
+
         if (isMounted) {
           const endTime = Date.now();
           const timeElapsed = (endTime - startTime) / 1000;
           setLoadingTime(timeElapsed);
           setGames(allGames);
           setLoading(false);
-          
-          console.log('Loading Performance:', {
+
+          console.log("Loading Performance:", {
             totalTime: `${timeElapsed.toFixed(2)} seconds`,
             gamesLoaded: Object.values(allGames).flat().length,
-            genresApplied: selectedGenres
+            genresApplied: selectedGenres,
           });
         }
       } catch (error) {
-        console.error('Error fetching games:', error);
+        console.error("Error fetching games:", error);
         if (isMounted) {
           setLoading(false);
         }
@@ -96,17 +98,31 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-900 flex">
-      <Sidebar 
-        selectedGenres={selectedGenres} 
+      <Sidebar
+        selectedGenres={selectedGenres}
         onGenreChange={handleGenreChange}
         onSidebarToggle={handleSidebarToggle}
       />
-      
-      <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-80' : 'ml-16'}`}>
+
+      <main
+        className={`flex-1 transition-all duration-300 ${
+          isSidebarOpen ? "ml-80" : "ml-16"
+        }`}
+      >
         <div className="p-8">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-4xl font-bold text-white text-center mb-8">Fresh Games</h1>
-            
+            <Link href="/" className="flex items-center justify-center flex-col">
+              <Image
+                src="/logo.png"
+                alt="fresh logo"
+                width={100}
+                height={100}
+              />{" "}
+              <h1 className="text-4xl font-bold text-white text-center mb-8">
+                Fresh Games
+              </h1>
+            </Link>
+
             {/* Loading Timer */}
             {loading && <LoadingTimer />}
 
@@ -116,13 +132,15 @@ export default function Home() {
                 Loaded in {loadingTime.toFixed(2)} seconds
               </div>
             )}
-            
+
             <SearchBar onSearch={handleSearch} />
 
             {searchResults ? (
               <div className="mb-10">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-white">Search Results</h2>
+                  <h2 className="text-2xl font-bold text-white">
+                    Search Results
+                  </h2>
                   <button
                     onClick={clearSearch}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition duration-200"
@@ -145,23 +163,6 @@ export default function Home() {
                   bgColor="bg-yellow-600"
                   loading={loading}
                 />
-                
-                <GameSection
-                  title="Upcoming Games"
-                  icon="🎮"
-                  games={games.upcoming}
-                  bgColor="bg-blue-600"
-                  loading={loading}
-                />
-                
-                <GameSection
-                  title="AAA Games"
-                  icon="👑"
-                  games={games.aaa}
-                  bgColor="bg-purple-600"
-                  loading={loading}
-                />
-                
                 <GameSection
                   title="Cracked Games"
                   icon="🔓"
@@ -169,7 +170,7 @@ export default function Home() {
                   bgColor="bg-green-600"
                   loading={loading}
                 />
-                
+
                 <GameSection
                   title="Not-Cracked Games"
                   icon="🔒"
@@ -177,6 +178,24 @@ export default function Home() {
                   bgColor="bg-red-600"
                   loading={loading}
                 />
+
+                <GameSection
+                  title="Upcoming Games"
+                  icon="🎮"
+                  games={games.upcoming}
+                  bgColor="bg-blue-600"
+                  loading={loading}
+                />
+
+                {/* <GameSection
+                  title="AAA Games"
+                  icon="👑"
+                  games={games.aaa}
+                  bgColor="bg-purple-600"
+                  loading={loading}
+                /> */}
+
+                
               </div>
             )}
           </div>
